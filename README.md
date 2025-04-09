@@ -1,4 +1,4 @@
-# Vue Demo Application
+# CursorMercury
 
 A modern Vue.js demo application showcasing:
 - Vue 3 with TypeScript
