@@ -18,20 +18,13 @@ app.get('/api/tasks', (req, res) => {
   res.json(tasks);
 });
 
+// This endpoint will always return an error
 app.post('/api/tasks', (req, res) => {
-  const { text } = req.body;
-  if (!text) {
-    return res.status(400).json({ error: 'Task text is required' });
-  }
-
-  const newTask = {
-    id: nextId++,
-    text,
-    completed: false
-  };
-
-  tasks.push(newTask);
-  res.status(201).json(newTask);
+  // Simulate a server error
+  res.status(500).json({ 
+    error: 'Server Error',
+    message: 'Failed to create task. This is a simulated error for demo purposes.'
+  });
 });
 
 app.put('/api/tasks/:id', (req, res) => {
