@@ -1,58 +1,49 @@
 <template>
-  <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Task Manager</h1>
+  <div class="task-manager">
+    <h1>Task Manager</h1>
     
-    <!-- Add Task Form -->
-    <div class="mb-6">
-      <div class="flex gap-2">
-        <input
-          v-model="newTask"
-          @keyup.enter="addTask"
-          type="text"
-          placeholder="Add a new task..."
-          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          @click="addTask"
-          class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-        >
-          Add
-        </button>
-      </div>
+    <div class="add-task-form">
+      <input
+        v-model="newTask"
+        @keyup.enter="addTask"
+        type="text"
+        placeholder="Add a new task..."
+      />
+      <button @click="addTask">Add Task</button>
     </div>
 
-    <!-- Task List -->
-    <div class="space-y-3">
+    <div class="task-list">
       <div
         v-for="task in tasks"
         :key="task.id"
-        class="flex items-center justify-between p-4 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+        class="task-item"
       >
-        <div class="flex items-center gap-3">
-          <input
-            type="checkbox"
-            :checked="task.completed"
-            @change="toggleTask(task)"
-            class="w-5 h-5 text-blue-500 rounded focus:ring-blue-500"
-          />
-          <span :class="{ 'line-through text-gray-400': task.completed }">
-            {{ task.text }}
-          </span>
-        </div>
-        <button
-          @click="removeTask(task.id)"
-          class="text-red-500 hover:text-red-700"
+        <span 
+          :class="{ completed: task.completed }"
+          class="task-text"
+          @click="toggleTask(task)"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-          </svg>
-        </button>
+          {{ task.text }}
+        </span>
+        <div class="task-actions">
+          <button 
+            class="complete-btn"
+            @click="toggleTask(task)"
+          >
+            {{ task.completed ? 'Undo' : 'Complete' }}
+          </button>
+          <button 
+            class="delete-btn"
+            @click="removeTask(task.id)"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Stats -->
-    <div class="mt-6 text-sm text-gray-500">
-      {{ tasks.length }} tasks total, {{ completedTasks }} completed
+    <div class="stats">
+      <p>Completed: {{ completedTasks }} / {{ tasks.length }}</p>
     </div>
   </div>
 </template>
@@ -112,4 +103,122 @@ const removeTask = async (id: number) => {
 onMounted(() => {
   loadTasks()
 })
-</script> 
+</script>
+
+<style scoped>
+.task-manager {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #f0f0f0;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Weird styles */
+.task-list {
+  margin-top: 2rem;
+  transform: rotate(2deg);
+  background-color: #ffeb3b;
+  padding: 1rem;
+  border: 3px dashed #ff5722;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #e91e63;
+  color: white;
+  border-radius: 0.5rem;
+  transform: skew(-5deg);
+  transition: all 0.3s ease;
+}
+
+.task-item:hover {
+  transform: skew(5deg) scale(1.05);
+  background-color: #c2185b;
+}
+
+.task-text {
+  flex: 1;
+  margin-right: 1rem;
+  font-family: 'Comic Sans MS', cursive;
+  font-size: 1.2rem;
+  text-decoration: underline wavy;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: #9e9e9e;
+}
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.complete-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #2196f3;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  background-color: #e3f2fd;
+  transform: skew(-2deg);
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 5px #2196f3;
+  transform: skew(2deg);
+}
+
+.add-task-form {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #b3e5fc;
+  border-radius: 0.5rem;
+  transform: rotate(-1deg);
+}
+
+.stats {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 0.5rem;
+  text-align: center;
+  transform: rotate(1deg);
+  font-family: 'Impact', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+</style> 
